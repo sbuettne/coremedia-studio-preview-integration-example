@@ -37,6 +37,15 @@ section.intro {
   color: #FFFFFF;
 }
 
+section.code-link {
+  background: linear-gradient(133deg,#006cae,#2fac66);
+  color: #FFFFFF;
+}
+
+section.code-link a {
+  color: #FFFFFF;
+}
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
