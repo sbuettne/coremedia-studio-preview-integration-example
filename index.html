@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CoreMedia Studio Preview Integration Example</title>
+  <script type="module" crossorigin src="/assets/index-f0c702e9.js"></script>
+  <link rel="stylesheet" href="/assets/index-6ab33845.css">
+</head>
+
+<body>
+
+<main>
+
+  <section class="intro">
+    <h1><span class="subline">CoreMedia Content Cloud</span>Studio Preview Integration Example</h1>
+    <p>This static example shows the CoreMedia Studio preview integration and how to add support for responsive
+      breakpoints, zoom and context menus in a custom frontend.</p>
+    <p>Follow the examples to enable the integration for your custom frontend.</p>
+  </section>
+
+  <section>
+    <h2>I. Including the Preview JS</h2>
+    <p>To enable the preview integration for CoreMedia Studio, include the <code>preview.js</code> before the closing
+      <code class="language-html">&lt;/body&gt;</code>.</p>
+    <div class="code-example">
+      <h3>Example</h3>
+      <pre><code>
+&#x3C;body&#x3E;
+...
+// Include required preview.js
+&#x3C;script type=&#x22;javascript&#x22; src=&#x22;preview.js&#x22;&#x3E;&#x3C;/script&#x3E;
+&#x3C;/body&#x3E;
+  </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h2>II. Supporting the "Device Slider" and Zoom</h2>
+    <img src="/device-slider.png" alt="Device Slider" title="Device Slider"/>
+    <p>The <i>Device Slider</i> allows Studio users to preview responsive breakpoints by using a slider control in the
+      toolbar above the preview.</p>
+    <p>As a developer you can provide the supported breakpoint sizes via JSON.</p>
+
+    <div class="code-example">
+      <h3>Example</h3>
+      <pre><code class="language-javascript">[{
+  "cm_responsiveDevices": {
+    "mobile_portrait": { "width": 414, "height": 736, "order": 1 },
+    "mobile_landscape": { "width": 736, "height": 414, "order": 2 },
+    "tablet_portrait": { "width": 768, "height": 1024, "order": 3 },
+    "tablet_landscape": { "width": 1024, "height": 768, "order": 4 }
+  },
+  "cm_preferredWidth": 1280
+}]</code></pre>
+    </div>
+
+    <p>The example above defines the four breakpoints <code>mobile_portrait</code>, <code>mobile_landscape</code>,
+      <code>tablet_portrait</code>
+      and <code>tablet_landscape</code> and a preferred width to use in Studio for the preview.</p>
+    <p>The JSON data needs to be added to the <code>&lt;body&gt;</code> via the attribute <code>data-cm-metadata</code>.
+    </p>
+
+    <div class="code-example">
+      <h3>Example</h3>
+      <pre><code class="language-javascript">
+// Setting the attribute via JavaScript
+document.body.setAttribute("data-cm-metadata", JSON.stringify(responsiveDevicesMetaData));
+  </code></pre>
+    </div>
+  </section>
+
+  <section>
+    <h2>III. Provide Metadata for Content</h2>
+    <img class="example-image" src="/context-menu-example.png" title="Context Menu" alt="Context Menu"/>
+    <p>As a developer, you can also add content metadata to the DOM that will be picked up by Studio to provide context
+      menus for business users.</p>
+    <p>This will allow business users to open certain content for editing or to focus a form field for value input from
+      your custom frontend when it is shown in the Studio preview.</p>
+
+    <p>The necessary metadata can be provided in JSON format:</p>
+
+    <div class="code-example">
+      <pre><code class="language-javascript">
+[{
+  "_": {
+    "$Ref": "content/&lt;NUMERIC CONTENT ID&gt;"
+  }
+}]
+      </code></pre>
+    </div>
+
+    <div class="code-example">
+      <h3>Example</h3>
+      <pre><code class="language-html">
+&#x3C;div data-cm-metadata=&#x22;[{&#x27;_&#x27;:{&#x27;$Ref&#x27;:&#x27;content/123&#x27;}}]&#x22;&#x3E;...&#x3C;/div&#x3E;
+  </code></pre>
+      <p>The example above provides metadata for a reference to the content with the numeric id <code>123</code>.</p>
+    </div>
+
+    <p>The metadata can also provide information about a certain property value. For example that the <code>title</code> property is rendered in a certain DOM element.</p>
+
+    <div class="code-example">
+      <pre><code class="language-javascript">
+[{
+  "_": {
+    "properties.title"
+  }
+}]
+      </code></pre>
+    </div>
+
+    <div class="code-example">
+      <h3>Example</h3>
+      <pre><code class="language-html">
+&#x3C;div data-cm-metadata=&#x22;[{&#x27;_&#x27;:{&#x27;$Ref&#x27;:&#x27;content/123&#x27;}}]&#x22;&#x3E;
+  &#x3C;h1 data-cm-metadata=&#x22;[{&#x27;_&#x27;:&#x27;properties.title&#x27;}]&#x22;&#x3E;Hello World!&#x3C;/h1&#x3E;
+&#x3C;/div&#x3E;
+  </code></pre>
+    </div>
+
+    <p>The example above provides metadata for a reference to the content with the numeric id <code>123</code> and also marks the <code>h1</code> element with the information that the value of the <code>title</code> property of content <code>123</code> is rendered in the <code>h1</code> element.</p>
+
+  </section>
+
+</main>
+
+<script type="text/javascript">
+
+  // Name of the metadata attribute picked up by CoreMedia Studio.
+  const CM_METADATA_ATTRIBUTE_NAME = "data-cm-metadata";
+
+  // Add responsive device data to page body to provide media breakpoint information to Studio,
+  // which is used for the "device slider".
+
+  const responsiveDevicesMetaData = {
+    "cm_responsiveDevices": {
+      "mobile_portrait": { "width": 414, "height": 736, "order": 1 },
+      "mobile_landscape": { "width": 736, "height": 414, "order": 2 },
+      "tablet_portrait": { "width": 768, "height": 1024, "order": 3 },
+      "tablet_landscape": { "width": 1024, "height": 768, "order": 4 }
+    }, "cm_preferredWidth": 1280
+  };
+
+  // The cm-metadata data-attribute can contain any relevant data, so we need to wrap the responsive devices meta data in an array.
+  const cmBodyMetaData = [responsiveDevicesMetaData];
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.body.setAttribute(CM_METADATA_ATTRIBUTE_NAME, JSON.stringify(cmBodyMetaData));
+    console.log("Registered responsive devices:");
+    console.table(responsiveDevicesMetaData.cm_responsiveDevices);
+    console.log(`Preferred preview width: ${responsiveDevicesMetaData.cm_preferredWidth}px`);
+  });
+
+</script>
+
+
+
+</body>
+</html>
